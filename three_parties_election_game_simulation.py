@@ -47,7 +47,7 @@ class Softmax(object):
         """Takes `A`, `B`, `C` as the utility matrices for party A, B, C, resp. 
         social_bound: the upper bound assumption on the total social utility.
 
-        Returns `P` the probabilities of winning of a candidate `i` of party A
+        Return `P` the probabilities of winning of a candidate `i` of party A 
         against the competing candidate `j` of party B and candidate `k` of 
         party C as three-dimensional Numpy tensor according to the softmax model."""
         l = A.shape[0] # number of candidates in party A
@@ -68,7 +68,7 @@ class Softmax(object):
 
 class ElectionGame(object):
     """Political game object implementation."""
-    def __init__(self, num_candidates=(2,2,2), social_bound=10000, model=Softmax, \
+    def __init__(self, num_candidates=(2,2,2), social_bound=100, model=Softmax, \
         force_egoism=False, seed=None):
         self.num_candidates = num_candidates
         self.social_bound = social_bound
@@ -87,8 +87,7 @@ class ElectionGame(object):
             (a) supporters for the candidate's party;
             (b) supporters for the opposing party;
             
-        Returns the generated party utility matrix as three-dimensional Numpy
-        tensor."""
+        Return the generated party utility matrix as three-dimensional Numpy tensor."""
         voter_types = 3 
         # create the first dummy candidate
         parties = []
@@ -100,9 +99,9 @@ class ElectionGame(object):
                     candidate = np.array([])
                     UB = self.social_bound
                     for a in range(voter_types):
-                        new_value = self.rng.integers(0, UB*100, dtype=np.int64)/UB
-                        candidate = np.append(candidate, new_value)
-                        UB = UB - new_value
+                        new_value = self.rng.integers(0, UB*100, dtype=np.int64)
+                        candidate = np.append(candidate, new_value/100)
+                        UB = (UB*100 - new_value)/100
                     #candidate = self.rng.integers(0, self.social_bound, \
                     #    size=(1,voter_types), dtype=np.int64, endpoint=True)
                     candidate = candidate.reshape(1,voter_types)
@@ -118,12 +117,9 @@ class ElectionGame(object):
         return parties
 
     def confirm_egoism(self, A, B, C):
-        """Test whether the selected pair of parties `A` and `B` are
-        egoistic.
+        """Test whether the game is egoistic.
 
-        Takes `A`, `B`, `C` as the utility matrices for parties `A`, `B`, `C`,
-        resp. 
-
+        Takes `A`, `B`, `C` as the utility matrices for parties `A`, `B`, `C`, resp. 
         Return a boolean value True or False."""
         for i in range(A.shape[0]):
             #UT_ALL = A[0,0] + A[0,1] + A[0,2] 
@@ -149,10 +145,8 @@ class ElectionGame(object):
         """Compute the payoffs of a two-party election game as expected
         utilities.
         
-        Takes `A`, `B`, and `C` as the utility matrices for parties `A`, `B` 
-        `C`, resp. 
-        `P`: the probabilities of winning according to the selected
-        model.
+        Takes `A`, `B`, and `C` as the utility matrices for parties `A`, `B`, `C`, resp. 
+        `P`: the probabilities of winning according to the selected model.
         
         Returns `a`, `b`, `c` as the payoffs of party `A`, `B`, `C` resp., as
         three-dimensional Numpy tensors."""
@@ -183,10 +177,8 @@ class ElectionGame(object):
     def get_worst_PNE(self, a, b, c, social_welfare):
         """Computes Pure Nash Equilibrium.
 
-        Take payoff `a` of party A, payoff `b` of party B, and 
-        payoff `c` of party C.
-
-        Returns position as a tuple and worst pure-strategy Nash equilibrium 
+        Take payoff `a`, `b`, `c` of party A, B, C resp. 
+        Return position as a tuple and worst pure-strategy Nash equilibrium 
         as a float."""
         PNEs = list()
 
@@ -218,12 +210,11 @@ class ElectionGame(object):
     def run_election(self):
         """Runs the election process once.
 
-        Returns `A` the utility matrix for party A, `B` the utility matrix for
-        party B, `C` the utility matrix for party C 
-        Return `a` as the payoffs of party A, `b` as the payoffs of party B, 
-        and `c` as the payoffs of party C.
-        `PNE_pos` the position of worst pure-strategy Nash equilibrium, `PNE_val` the
-        value of worst pure-strategy Nash equilibrium, `PoA` the Price of Anarchy,
+        Return `A`, `B`, `C` as the utility matrices for party `A`, `B`, `C`, resp.  
+        Return `a`, `b`, `c` as the payoffs of party A, B, C, resp. 
+        `PNE_pos`: the position of worst pure-strategy Nash equilibrium, 
+        `PNE_val`: the value of worst pure-strategy Nash equilibrium, 
+        `PoA`: the Price of Anarchy,
         all packed into a single tuple for further recording in the history."""
         parties = self.generate_parties()
         A, B, C = parties[0], parties[1], parties[2]
@@ -260,6 +251,6 @@ class ElectionGame(object):
         print(f'Found PNE: {n_PNEs}/{n_records}')
 
 if __name__ == "__main__":
-    polgame = ElectionGame(num_candidates=(2,2,2), social_bound=10000, \
+    polgame = ElectionGame(num_candidates=(2,2,2), social_bound=100, \
         model=Natural, force_egoism=True, seed=None)
-    polgame.run_iterations(100)
+    polgame.run_iterations(20)
