@@ -67,7 +67,7 @@ class Softmax(object):
         return P
 
 class ElectionGame(object):
-    """Political game object implementation."""
+    """Election game object implementation."""
     def __init__(self, num_candidates=(2,2,2), social_bound=100, model=Softmax, \
         force_egoism=False, seed=None):
         self.num_candidates = num_candidates
@@ -253,4 +253,4 @@ class ElectionGame(object):
 if __name__ == "__main__":
     polgame = ElectionGame(num_candidates=(2,2,2), social_bound=100, \
         model=Natural, force_egoism=True, seed=None)
-    polgame.run_iterations(500)
+    polgame.run_iterations(1000)
