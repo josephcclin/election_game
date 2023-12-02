@@ -253,4 +253,4 @@ class ElectionGame(object):
 if __name__ == "__main__":
     polgame = ElectionGame(num_candidates=(2,2,2), social_bound=100, \
         model=Natural, force_egoism=True, seed=None)
-    polgame.run_iterations(20)
+    polgame.run_iterations(500)
