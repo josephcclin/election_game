@@ -199,7 +199,7 @@ class ElectionGame(object):
         """Calculates the price of anarchy.
 
         Takes `optimal_state` the highest social welfare and `PNE_val` the
-        value of the worst Pure Nash Equilibrium.
+        value of the worst pure Nash equilibrium.
 
         Returns the Price of Anarchy as a float."""
         if PNE_val == None or PNE_val == 0:
@@ -252,5 +252,5 @@ class ElectionGame(object):
 
 if __name__ == "__main__":
     polgame = ElectionGame(num_candidates=(2,2,2), social_bound=100, \
-        model=Natural, force_egoism=True, seed=None)
-    polgame.run_iterations(1000)
+        model=Softmax, force_egoism=True, seed=None)
+    polgame.run_iterations(5000)
